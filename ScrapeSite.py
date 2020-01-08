@@ -39,6 +39,6 @@ def grab_email_from_site(url):
 
         return href
 
-    except:
-        print('Could not request ' + url)
+    except requests.RequestException as e:
+        print('Could not request ' + url + ', error message: ' + str(e))
         return None
