@@ -20,10 +20,13 @@ def create_browser():
 def search_sites_from_list(search_list, file_location):
     email_list = []
 
-    print('------------------ \nScraping emails:\n')
+    counter = 1
+    print('------------------ \nScraping emails:\n\nSite:\n')
     for search in search_list:
         # Appending the cities will hbe done in the calling function, not this one
         # site_list = location_search(append_cities_to_searches(search))
+        print('\t' + str(counter) + ' : ' + str(len(search_list)))
+        counter += 1
         email_list.append(scrape_email(email_list, search))
 
     print('Writing to ' + file_location + '\n------------------')
@@ -40,7 +43,8 @@ def scrape_email(email_list, search):
 def write_file(file_name, list_to_write):
     with open(file_name, 'w+') as file:
         for i in list_to_write:
-            file.write(i + '\n')
+            if i:
+                file.write(i + '\n')
 
 
 def location_search(search_list, is_email_scrape):

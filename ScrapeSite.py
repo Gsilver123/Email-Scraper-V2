@@ -16,6 +16,7 @@ def grab_email_from_site(url):
                 if i['href'].find('map') != -1:
                     return None
                 href = i['href']
+                break
 
         split_href = href.split('@')
 
@@ -39,6 +40,6 @@ def grab_email_from_site(url):
 
         return href
 
-    except requests.RequestException as e:
+    except Exception as e:
         print('Could not request ' + url + ', error message: ' + str(e))
         return None

@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import QApplication, QLineEdit, QFileDialog, QPushButton, Q
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import pyqtSlot
 import GoogleSearcher
+import os.path
+from os import path
 import sys
 
 
@@ -111,13 +113,18 @@ class AppGui(QWidget):
     @pyqtSlot()
     def onGoClicked(self):
         self.fileName = self.outputFileNameEditText.text()
-        if len(self.locationEditText.text()) <= 0 or len(self.fileName) <= 0 or len(self.searchList) <= 0 or len(self.fileLocation) <= 0:
+        location = self.locationEditText.text()
+        if len(location) <= 0 or len(self.fileName) <= 0 or len(self.searchList) <= 0 or len(self.fileLocation) <= 0:
             errorMessage = self.createMessageBox("Meow", "Please fill all fields before continuing, Thank you", "Error")
             errorMessage.exec_()
         else:
             file = self.fileLocation + '/' + self.fileName + '.csv'
-            GoogleSearcher.start_search(self.locationEditText.text(), self.searchList, file, self.checkBox.isChecked())
+            if path.exists(file):
+                self.createMessageBox('File name already exists', 'Please choose another', 'Error')
+                return
+            is_email_scrape = self.checkBox.isChecked()
             self.close()
+            GoogleSearcher.start_search(location, self.searchList, file, is_email_scrape)
 
     def openFileNameOptions(self):
         outFileDialogOptions = QFileDialog(self, "Choose File")
