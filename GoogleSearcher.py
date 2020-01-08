@@ -92,6 +92,7 @@ def location_search(search_list, is_email_scrape):
                         try:
                             title = str(j.find_element_by_xpath('div/div').text)
                             title.replace('\n', ' ')
+                            title.replace(',', '')
                             number = str(j.find_element_by_xpath('span/div[3]/span[2]').text)
                             out_list.append(title + ", " + number)
 
