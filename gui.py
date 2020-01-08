@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QApplication, QLineEdit, QFileDialog, QPushButton, Q
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import pyqtSlot
 import GoogleSearcher
-import os.path
 from os import path
 import sys
 
@@ -18,9 +17,9 @@ class AppGui(QWidget):
         self.top = 250
         self.width = 650
         self.height = 650
-        self.fileLocation = ''
-        self.fileName = ''
-        self.searchList = []
+        self.file_location = ''
+        self.file_name = ''
+        self.search_list = []
         self.window()
 
     def window(self):
@@ -29,117 +28,126 @@ class AppGui(QWidget):
 
         font = QFont("Times", 14)
 
-        self.placeTextBox(20, 70, 300, 30, "Input location you want to search:", font)
-        self.locationEditText = self.placeQLineEdit(20, 100, 250, 30, font)
+        self.place_text_box(20, 70, 300, 30, "Input location you want to search:", font)
+        self.location_edit_text = self.place_q_line_edit(20, 100, 250, 30, font)
 
-        self.placeTextBox(20, 170, 200, 30, "Add to search list", font)
-        self.searchListEditText = self.placeQLineEdit(20, 200, 250, 30, font)
-        self.placeButton(280, 200, 'Add', 'Add to the list with this button', font, self.onAddToSearchListClicked)
-        self.placeButton(360, 200, 'Remove', 'Remove entries with this button', font, self.onRemoveToSearchListClicked)
+        self.place_text_box(20, 170, 200, 30, "Add to search list", font)
+        self.search_list_edit_text = self.place_q_line_edit(20, 200, 250, 30, font)
+        self.place_button(280, 200, 'Add', 'Add to the list with this button', font, self.on_add_to_search_list_clicked)
+        self.place_button(360, 200, 'Remove', 'Remove entries with this button', font, self.on_remove_to_search_list_clicked)
 
-        self.placeTextBox(20, 270, 200, 30, "Output file location:", font)
-        self.outputFileLocationEditText = self.placeQLineEdit(20, 300, 475, 30, font)
+        self.place_text_box(20, 270, 200, 30, "Output file location:", font)
+        self.output_file_location_edit_text = self.place_q_line_edit(20, 300, 475, 30, font)
 
-        self.placeTextBox(20, 375, 200, 30, 'Enter file name:', font)
-        self.outputFileNameEditText = self.placeQLineEdit(20, 405, 250, 30, font)
+        self.place_text_box(20, 375, 200, 30, 'Enter file name:', font)
+        self.output_file_name_edit_text = self.place_q_line_edit(20, 405, 250, 30, font)
 
-        self.placeButton(510, 300, 'File Search', 'Click here to find a file', font, self.onFileSearchClicked)
+        self.place_button(510, 300, 'File Search', 'Click here to find a file', font, self.on_file_search_clicked)
 
-        self.checkBox = QCheckBox(self)
-        self.checkBox.setText('Check to scape emails, else scrape phone numbers')
-        self.checkBox.setFont(font)
-        self.checkBox.setChecked(False)
-        self.checkBox.move(20, 480)
+        self.check_box = QCheckBox(self)
+        self.check_box.setText('Check to scape emails, else scrape phone numbers')
+        self.check_box.setFont(font)
+        self.check_box.setChecked(False)
+        self.check_box.move(20, 480)
 
-        self.placeButton(20, 550, 'Meow (Go)', 'Click this. Meow', font, self.onGoClicked)
+        self.place_button(20, 550, 'Meow (Go)', 'Click this. Meow', font, self.on_go_clicked)
 
         self.show()
 
-    def placeTextBox(self, xpos, ypos, width, height, text, font):
+    def place_text_box(self, xpos, ypos, width, height, text, font):
         label = QtWidgets.QLabel(self)
         label.setText(text)
         label.move(xpos, ypos)
         label.resize(width, height)
         label.setFont(font)
 
-    def placeQLineEdit(self, xpos, ypos, width, height, font):
-        qLineEdit = QLineEdit(self)
-        qLineEdit.move(xpos, ypos)
-        qLineEdit.resize(width, height)
-        qLineEdit.setFont(font)
+    def place_q_line_edit(self, xpos, ypos, width, height, font):
+        q_line_edit = QLineEdit(self)
+        q_line_edit.move(xpos, ypos)
+        q_line_edit.resize(width, height)
+        q_line_edit.setFont(font)
 
-        return qLineEdit
+        return q_line_edit
 
-    def placeButton(self, xpos, ypos, buttonText, toolTip, font, callback):
-        outFileSearchButton = QPushButton(buttonText, self)
-        outFileSearchButton.setToolTip(toolTip)
-        outFileSearchButton.move(xpos, ypos)
-        outFileSearchButton.setFont(font)
-        outFileSearchButton.clicked.connect(callback)
-
-    @pyqtSlot()
-    def onAddToSearchListClicked(self):
-        if self.searchListEditText.text() not in self.searchList:
-            self.searchList.append(self.searchListEditText.text())
-            self.searchListEditText.setText('')
+    def place_button(self, xpos, ypos, button_text, tool_tip, font, callback):
+        out_file_search_button = QPushButton(button_text, self)
+        out_file_search_button.setToolTip(tool_tip)
+        out_file_search_button.move(xpos, ypos)
+        out_file_search_button.setFont(font)
+        out_file_search_button.clicked.connect(callback)
 
     @pyqtSlot()
-    def onRemoveToSearchListClicked(self):
-        if len(self.searchList) > 0:
-            removeSearchDialog = QVBoxLayout()
-            dialogHeight = 0
-            for i in self.searchList:
-                button = QPushButton(str(i))
-                button.clicked.connect(lambda: self.onRemoveItemFromDialog(i))
-                removeSearchDialog.addWidget(button)
-                dialogHeight += 100
-
-            self.removeDialogBox = QDialog(self)
-            self.removeDialogBox.resize(300, dialogHeight)
-            self.removeDialogBox.setWindowTitle('Click to remove')
-            self.removeDialogBox.setLayout(removeSearchDialog)
-            self.removeDialogBox.exec_()
+    def on_add_to_search_list_clicked(self):
+        if self.search_list_edit_text.text() not in self.search_list and len(self.search_list_edit_text.text()) > 0:
+            self.search_list.append(self.search_list_edit_text.text())
+            self.search_list_edit_text.setText('')
 
     @pyqtSlot()
-    def onRemoveItemFromDialog(self, item):
-        if item in self.searchList:
-            self.searchList.remove(item)
-            self.removeDialogBox.close()
+    def on_remove_to_search_list_clicked(self):
+        if len(self.search_list) > 0:
+            remove_search_dialog = QVBoxLayout()
+            dialog_height = 0
+            font = QFont('Times', 12)
+            check_box_list = []
+            for i in self.search_list:
+                remove_check_box = QCheckBox()
+                remove_check_box.setText(str(i))
+                remove_check_box.setFont(font)
+                print(remove_check_box.text())
+                check_box_list.append(remove_check_box)
+                remove_search_dialog.addWidget(remove_check_box)
+                dialog_height += 50
+
+            button = QPushButton('Remove Selected')
+            button.clicked.connect(lambda: self.on_remove_item_from_dialog(check_box_list))
+            remove_search_dialog.addWidget(button)
+            self.remove_dialog_box = QDialog(self)
+            self.remove_dialog_box.resize(300, dialog_height)
+            self.remove_dialog_box.setWindowTitle('Check to remove')
+            self.remove_dialog_box.setLayout(remove_search_dialog)
+            self.remove_dialog_box.exec_()
 
     @pyqtSlot()
-    def onFileSearchClicked(self):
-        self.openFileNameOptions()
+    def on_remove_item_from_dialog(self, check_box_list):
+        for i in check_box_list:
+            if i.isChecked():
+                self.search_list.remove(i.text())
+        self.remove_dialog_box.close()
 
     @pyqtSlot()
-    def onGoClicked(self):
-        self.fileName = self.outputFileNameEditText.text()
-        location = self.locationEditText.text()
-        if len(location) <= 0 or len(self.fileName) <= 0 or len(self.searchList) <= 0 or len(self.fileLocation) <= 0:
-            errorMessage = self.createMessageBox("Meow", "Please fill all fields before continuing, Thank you", "Error")
-            errorMessage.exec_()
+    def on_file_search_clicked(self):
+        self.open_file_name_options()
+
+    @pyqtSlot()
+    def on_go_clicked(self):
+        self.file_name = self.output_file_name_edit_text.text()
+        location = self.location_edit_text.text()
+        if len(location) <= 0 or len(self.file_name) <= 0 or len(self.search_list) <= 0 or len(self.file_location) <= 0:
+            error_message = self.create_message_box("Meow", "Please fill all fields before continuing, Thank you", "Error")
+            error_message.exec_()
         else:
-            file = self.fileLocation + '/' + self.fileName + '.csv'
+            file = self.file_location + '/' + self.file_name + '.csv'
             if path.exists(file):
-                self.createMessageBox('File name already exists', 'Please choose another', 'Error')
+                self.create_message_box('File name already exists', 'Please choose another', 'Error')
                 return
-            is_email_scrape = self.checkBox.isChecked()
+            is_email_scrape = self.check_box.isChecked()
             self.close()
-            GoogleSearcher.start_search(location, self.searchList, file, is_email_scrape)
+            GoogleSearcher.start_search(location, self.search_list, file, is_email_scrape)
 
-    def openFileNameOptions(self):
-        outFileDialogOptions = QFileDialog(self, "Choose File")
-        outFileDialogOptions.setFileMode(QFileDialog.DirectoryOnly)
-        outFileDialogOptions.exec_()
-        self.fileLocation = outFileDialogOptions.selectedFiles()[0]
-        self.outputFileLocationEditText.setText(self.fileLocation)
+    def open_file_name_options(self):
+        out_file_dialog_options = QFileDialog(self, "Choose File")
+        out_file_dialog_options.setFileMode(QFileDialog.DirectoryOnly)
+        out_file_dialog_options.exec_()
+        self.file_location = out_file_dialog_options.selectedFiles()[0]
+        self.output_file_location_edit_text.setText(self.file_location)
 
-    def createMessageBox(self, text, infoText, title):
-        messageBox = QMessageBox(self)
-        messageBox.setText(text)
-        messageBox.setInformativeText(infoText)
-        messageBox.setWindowTitle(title)
+    def create_message_box(self, text, info_text, title):
+        message_box = QMessageBox(self)
+        message_box.setText(text)
+        message_box.setInformativeText(info_text)
+        message_box.setWindowTitle(title)
 
-        return messageBox
+        return message_box
 
 
 if __name__ == '__main__':
