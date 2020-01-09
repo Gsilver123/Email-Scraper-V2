@@ -98,7 +98,9 @@ def location_search(search_list, is_email_scrape):
                             title.replace('\n', ' ')
                             title.replace(',', '')
                             number = str(j.find_element_by_xpath('span/div[3]/span[2]').text)
-                            out_list.append(title + ", " + number)
+                            entry = title + ", " + number
+                            if entry not in out_list:
+                                out_list.append(entry)
 
                         except Exception as exc:
                             print('Could not retrieve name or phone number: error: ' + str(exc))
