@@ -95,8 +95,8 @@ def location_search(search_list, is_email_scrape):
                     for j in elems:
                         try:
                             title = str(j.find_element_by_xpath('div/div').text)
-                            title.replace('\n', ' ')
-                            title.replace(',', '')
+                            title = title.replace('\n', ' ')
+                            title = title.replace(',', '')
                             number = str(j.find_element_by_xpath('span/div[3]/span[2]').text)
                             entry = title + ", " + number
                             if entry not in out_list:
