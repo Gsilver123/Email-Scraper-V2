@@ -14,7 +14,10 @@ def start_search(location, search_list, file_location, is_email_scrape):
 
 
 def create_browser():
-    return webdriver.Chrome('chromedriver_win32\chromedriver')
+    try:
+        return webdriver.Chrome('chromedriver_win32\chromedriver')
+    except Exception as e:
+        print(str(e))
 
 
 def search_sites_from_list(search_list, file_location):
@@ -58,7 +61,7 @@ def location_search(search_list, is_email_scrape):
         search_bar.send_keys(Keys.ENTER)
 
         try:
-            button = browser.find_element_by_class_name('cMjHbjVt9AZ__button')
+            button = browser.find_element_by_class_name('Q2MMlc')
             button.send_keys(Keys.ENTER)
         except Exception as ex:
             print(str(ex))
